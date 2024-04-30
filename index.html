@@ -5,17 +5,86 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Search User by Barcode</title>
   <script src="html5-qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    input[type="text"],
+    button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #007bff;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #reader {
+      margin: 20px auto;
+      text-align: center;
+    }
+
+    #scanResult {
+      margin-bottom: 20px;
+    }
+
+    #details-container {
+      background-color: #f9f9f9;
+      border-radius: 5px;
+      padding: 10px;
+    }
+
+    #details-container h3 {
+      margin-bottom: 10px;
+    }
+
+    #details-container p {
+      margin: 5px 0;
+    }
+  </style>
 </head>
 <body>
-  <h1>Search User by Barcode</h1>
-  <input type="text" id="barcode-input" placeholder="Enter Barcode">
-  <button id="search-button">Search</button>
-  <div id="details-container"></div>
+  <div class="container">
+    <h1>Search User by Barcode</h1>
+    <div id="reader"></div>
+    <div id="scanResult"></div>
+    <audio id="beepSound" src="beep.mp3" preload="auto"></audio>
 
-  <h1>Barcode Scanner</h1>
-<div id="reader"></div>
-<div id="scanResult"></div>
-<audio id="beepSound" src="beep.mp3" preload="auto"></audio>
+    <input type="text" id="barcode-input" placeholder="Enter Barcode">
+    <button id="search-button">Search</button>
+    <div id="details-container"></div>
+  </div>
 
   <script type="module">
 
@@ -112,10 +181,6 @@ function onScanSuccess(decodedText, decodedResult) {
         alert('Please enter a barcode');
       }
     });
-
-
-
-    
 
 
   </script>
