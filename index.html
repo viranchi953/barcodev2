@@ -18,6 +18,38 @@
 <audio id="beepSound" src="beep.mp3" preload="auto"></audio>
 
   <script type="module">
+
+
+//barcode scanner logic
+function onScanSuccess(decodedText, decodedResult) {
+        const scanResultElement = document.getElementById('scanResult');
+        scanResultElement.innerHTML = `Scan result: ${decodedText}`;
+        console.log(`Scan result: ${decodedText}`, decodedResult);
+    
+        // Play the beep sound
+        const beepSound = document.getElementById('beepSound');
+        beepSound.play();
+    
+        // Vibrate for 200 milliseconds (adjust as needed)
+        if (navigator.vibrate) {
+            navigator.vibrate(200);
+        }
+    }
+    
+    function onScanError(errorMessage) {
+        console.error(errorMessage);
+    }
+    
+    var html5QrcodeScanner = new Html5QrcodeScanner(
+        "reader", { fps: 10, qrbox: 250 });
+    html5QrcodeScanner.render(onScanSuccess, onScanError);
+
+
+
+
+
+//firebase logic
+
     // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
     import { getDatabase, ref, orderByChild, equalTo, get } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
@@ -43,7 +75,7 @@
     const detailsContainer = document.getElementById('details-container');
 
     searchButton.addEventListener('click', () => {
-      const barcode = barcodeInput.value.trim();
+      const barcode = decodedText.value.trim();
       if (barcode) {
         const dbRef = ref(database, '/user');
 
@@ -78,28 +110,9 @@
 
 
 
-    function onScanSuccess(decodedText, decodedResult) {
-        const scanResultElement = document.getElementById('scanResult');
-        scanResultElement.innerHTML = `Scan result: ${decodedText}`;
-        console.log(`Scan result: ${decodedText}`, decodedResult);
     
-        // Play the beep sound
-        const beepSound = document.getElementById('beepSound');
-        beepSound.play();
-    
-        // Vibrate for 200 milliseconds (adjust as needed)
-        if (navigator.vibrate) {
-            navigator.vibrate(200);
-        }
-    }
-    
-    function onScanError(errorMessage) {
-        console.error(errorMessage);
-    }
-    
-    var html5QrcodeScanner = new Html5QrcodeScanner(
-        "reader", { fps: 10, qrbox: 250 });
-    html5QrcodeScanner.render(onScanSuccess, onScanError);
+
+
   </script>
 </body>
 </html>
