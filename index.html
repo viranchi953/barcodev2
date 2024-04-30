@@ -25,6 +25,11 @@ function onScanSuccess(decodedText, decodedResult) {
         const scanResultElement = document.getElementById('scanResult');
         scanResultElement.innerHTML = `Scan result: ${decodedText}`;
         console.log(`Scan result: ${decodedText}`, decodedResult);
+
+
+        // Update the barcode-input field with the scanned value
+      const barcodeInput = document.getElementById('barcode-input');
+      barcodeInput.value = decodedText;
     
         // Play the beep sound
         const beepSound = document.getElementById('beepSound');
@@ -75,7 +80,7 @@ function onScanSuccess(decodedText, decodedResult) {
     const detailsContainer = document.getElementById('details-container');
 
     searchButton.addEventListener('click', () => {
-      const barcode = decodedText.value.trim();
+      const barcode = barcodeInput.value.trim();
       if (barcode) {
         const dbRef = ref(database, '/user');
 
