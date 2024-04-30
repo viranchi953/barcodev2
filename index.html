@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search User by Barcode</title>
+  <script src="html5-qrcode.min.js"></script>
+</head>
+<body>
+  <h1>Search User by Barcode</h1>
+  <input type="text" id="barcode-input" placeholder="Enter Barcode">
+  <button id="search-button">Search</button>
+  <div id="details-container"></div>
+
+  <h1>Barcode Scanner</h1>
+<div id="reader"></div>
+<div id="scanResult"></div>
+<audio id="beepSound" src="beep.mp3" preload="auto"></audio>
+
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+    import { getDatabase, ref, orderByChild, equalTo, get } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyC-O58Td_hWKT9ZAIkX5B2g0WPRi_FERlU",
+      authDomain: "attendance-f7dba.firebaseapp.com",
+      databaseURL: "https://attendance-f7dba-default-rtdb.firebaseio.com",
+      projectId: "attendance-f7dba",
+      storageBucket: "attendance-f7dba.appspot.com",
+      messagingSenderId: "923168475692",
+      appId: "1:923168475692:web:d4e555a8a108fa72921f89",
+      measurementId: "G-Q4Y6GKVZ9Y"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    const barcodeInput = document.getElementById('barcode-input');
+    const searchButton = document.getElementById('search-button');
+    const detailsContainer = document.getElementById('details-container');
+
+    searchButton.addEventListener('click', () => {
+      const barcode = barcodeInput.value.trim();
+      if (barcode) {
+        const dbRef = ref(database, '/user');
+
+        get(dbRef).then((snapshot) => {
+          const data = snapshot.val();
+          detailsContainer.innerHTML = ''; // Clear previous results
+          if (data) {
+            // Find the matching user based on the entered barcode
+            const matchingUser = Object.values(data).find(user => user.barcode === barcode);
+
+            if (matchingUser) {
+              const { username, Balance, Days_left } = matchingUser;
+              detailsContainer.innerHTML = `
+                <h3>User Details</h3>
+                <p>Username: ${username}</p>
+                <p>Balance: ${Balance}</p>
+                <p>Days Left: ${Days_left}</p>
+              `;
+            } else {
+              detailsContainer.innerHTML = 'Barcode value not found';
+            }
+          } else {
+            detailsContainer.innerHTML = 'No data available';
+          }
+        }).catch((error) => {
+          console.error('Error fetching data:', error);
+        });
+      } else {
+        alert('Please enter a barcode');
+      }
+    });
+
+
+
+    function onScanSuccess(decodedText, decodedResult) {
+        const scanResultElement = document.getElementById('scanResult');
+        scanResultElement.innerHTML = `Scan result: ${decodedText}`;
+        console.log(`Scan result: ${decodedText}`, decodedResult);
+    
+        // Play the beep sound
+        const beepSound = document.getElementById('beepSound');
+        beepSound.play();
+    
+        // Vibrate for 200 milliseconds (adjust as needed)
+        if (navigator.vibrate) {
+            navigator.vibrate(200);
+        }
+    }
+    
+    function onScanError(errorMessage) {
+        console.error(errorMessage);
+    }
+    
+    var html5QrcodeScanner = new Html5QrcodeScanner(
+        "reader", { fps: 10, qrbox: 250 });
+    html5QrcodeScanner.render(onScanSuccess, onScanError);
+  </script>
+</body>
+</html>
